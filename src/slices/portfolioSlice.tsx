@@ -24,11 +24,15 @@ const initialState: PortfolioState = {
   portfolio: [],
 };
 
+const getAnalysisServiceUrl = () => {
+  return process.env.REACT_APP_ANALYSIS_SERVICE_URL || process.env.ANALYSIS_SERVICE_URL;
+}
+
 export const fetchPortfolio = createAsyncThunk(
   'portfolio/fetchPortfolio',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/portfolio/test`);
+      const response = await axios.get(`${getAnalysisServiceUrl()}/portfolio/test`);
 
       if (!Array.isArray(response.data)) {
         return thunkAPI.rejectWithValue('Data is not an array');
@@ -46,7 +50,7 @@ export const fetchPortfolio = createAsyncThunk(
             type: item.optionType
           }).toString();
 
-          const deltaResponse = await axios.get(`${process.env.REACT_APP_ANALYSIS_SERVICE_URL}/calculate_delta?${queryParams}`);
+          const deltaResponse = await axios.get(`${getAnalysisServiceUrl()}/calculate_delta?${queryParams}`);
           delta = deltaResponse.data.delta;
         } catch (error) {
           console.error('Error fetching delta:', error);

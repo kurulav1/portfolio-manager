@@ -33,12 +33,16 @@ interface FetchStockOptionsPayload {
   endDate: string;
 }
 
+const getBackendUrl = () => {
+  return process.env.REACT_APP_BACKEND_URL || process.env.BACKEND_URL;
+}
+
 export const fetchStockOptionsByTicker = createAsyncThunk(
   'ticker/fetchByTicker',
   async (payload: FetchStockOptionsPayload, thunkAPI) => {
     try {
       const { stockOption, startDate, endDate } = payload;
-      let url = `${process.env.REACT_APP_BACKEND_URL}/portfolio/stock-options/${stockOption}`;
+      let url = `${getBackendUrl()}/portfolio/stock-options/${stockOption}`;
       if (startDate && endDate) {
         url += `?start_date=${startDate}&end_date=${endDate}`;
       }
@@ -102,7 +106,7 @@ export const addStockOptionToPortfolio = createAsyncThunk(
     quantity: number;
   }, thunkAPI) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/portfolio/add-to-portfolio`, data);
+      const response = await axios.post(`${getBackendUrl()}/portfolio/add-to-portfolio`, data);
       return response.data;
     } catch (error) {
       let errorMessage = 'Unknown error occurred';

@@ -1,5 +1,4 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
-import { useSelector } from 'react-redux';
+import  { useEffect } from 'react';
 import { useDispatch } from './store'; 
 import { fetchPortfolio } from './slices/portfolioSlice';
 import PortfolioView from './components/PortfolioView';

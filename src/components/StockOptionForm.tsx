@@ -30,7 +30,7 @@ const TickerSearchComponent: React.FC = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(10);
 
   const handleSearch = () => {
     dispatch(fetchStockOptionsByTicker({ stockOption: ticker, startDate, endDate }));
@@ -115,8 +115,7 @@ const TickerSearchComponent: React.FC = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = stockOptions.slice(indexOfFirstItem, indexOfLastItem);
-  const [pageNeighbours, setPageNeighbours] = useState(2); 
-  const totalPageNumbers = pageNeighbours * 2 + 3; 
+  const [pageNeighbours] = useState(2); 
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(stockOptions.length / itemsPerPage); i++) {
     pageNumbers.push(i);

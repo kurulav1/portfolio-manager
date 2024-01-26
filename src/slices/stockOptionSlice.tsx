@@ -38,24 +38,22 @@ export const fetchStockOptionsByTicker = createAsyncThunk(
   async (payload: FetchStockOptionsPayload, thunkAPI) => {
     try {
       const { stockOption, startDate, endDate } = payload;
-
       let url = `${process.env.REACT_APP_BACKEND_URL}/portfolio/stock-options/${stockOption}`;
       if (startDate && endDate) {
         url += `?start_date=${startDate}&end_date=${endDate}`;
       }
       const response = await axios.get(url);
       return response.data;
-      } catch (error) {
-        let errorMessage = 'Unknown error occurred';
-        if (axios.isAxiosError(error) && error.response && error.response.data) {
-          errorMessage = error.response.data;
-        }
-        return thunkAPI.rejectWithValue(errorMessage);
+    } catch (error) {
+      let errorMessage = 'Unknown error occurred';
+      if (axios.isAxiosError(error) && error.response && error.response.data) {
+        errorMessage = error.response.data;
       }
+      return thunkAPI.rejectWithValue(errorMessage);
     }
-  );
+  }
+);
   
-
 const tickerSlice = createSlice({
   name: 'ticker',
   initialState,
@@ -64,28 +62,29 @@ const tickerSlice = createSlice({
     builder.addCase(fetchStockOptionsByTicker.pending, (state) => {
       state.loading = true;
       state.error = null;
-    });
-    builder.addCase(fetchStockOptionsByTicker.fulfilled, (state, action: PayloadAction<StockOption[]>) => {
+    })
+    .addCase(fetchStockOptionsByTicker.fulfilled, (state, action: PayloadAction<StockOption[]>) => {
       state.stockOptions = action.payload;
       state.loading = false;
-    });
-    builder.addCase(fetchStockOptionsByTicker.rejected, (state, action) => {
+    })
+    .addCase(fetchStockOptionsByTicker.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    })
+    .addCase(addStockOptionToPortfolio.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(addStockOptionToPortfolio.fulfilled, (state) => {
+      state.loading = false;
+    })
+    .addCase(addStockOptionToPortfolio.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });
-    builder.addCase(addStockOptionToPortfolio.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      });
-      builder.addCase(addStockOptionToPortfolio.fulfilled, (state) => {
-        state.loading = false;
-      });
-      builder.addCase(addStockOptionToPortfolio.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      });
   },
 });
+
 
 export const addStockOptionToPortfolio = createAsyncThunk(
   'ticker/addToPortfolio',
@@ -103,7 +102,7 @@ export const addStockOptionToPortfolio = createAsyncThunk(
     quantity: number;
   }, thunkAPI) => {
     try {
-      const response = await axios.post(`${process.env.BACKEND_URL}/portfolio/add-to-portfolio`, data);
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/portfolio/add-to-portfolio`, data);
       return response.data;
     } catch (error) {
       let errorMessage = 'Unknown error occurred';
@@ -115,6 +114,4 @@ export const addStockOptionToPortfolio = createAsyncThunk(
   }
 );
 
-
-  
 export default tickerSlice.reducer;

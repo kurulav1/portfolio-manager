@@ -18,9 +18,22 @@ The app uses the React framework with TypeScript for implementation of the web-b
 styled with Boostrap and features Redux state management. The frontend is deployed using the Azure Static Web App service and features continuous integration utilizing a GitHub repository.
 ### Backend
 For backend, the Node.js Express framework is used, along with Redis caching. The backend is hosted as an Azure standard Web App.
+
+The backend code is available at:
+https://github.com/kurulav1/portfolio-manager-backend
+
 ### Database
 The database used is PostgresSQL hosted using Azure databases. 
-### Data microservice
+### Data Microservice
 A data microservice, mainly for interacting with Yahoo! Finance, in order to get up-to-date data about stock options and treasury yields. The app is written with Python and uses Flask for handling requests. Deployment is done using a Docker container along with Azure Container Instances and GitHub continuous integration (CI).
+
+The service code is available at:
+
+https://github.com/kurulav1/portfolio-data-service
+
 ### Analytics Microservice
 Microservice for enabling specific calculations, currently the Black-Scholes Delta. Like the data microservice, this is also a Python app using Flask, Docker and Azure Container Instances. 
+
+The service code is available at:
+
+https://github.com/kurulav1/portfolio-analysis-service

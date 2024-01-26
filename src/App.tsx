@@ -20,7 +20,8 @@ function App() {
   useEffect(() => {
     dispatch(fetchPortfolio());
   }, [dispatch]);
-
+  console.log(process.env.REACT_APP_ANALYSIS_SERVICE_URL)
+  console.log(process.env.REACT_APP_BACKEND_URL)
   return (
     <div className="container mt-4">
       <div className="row">

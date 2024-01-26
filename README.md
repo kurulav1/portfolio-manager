@@ -1,70 +1,26 @@
-# Getting Started with Create React App
+#Portfolio Manager
+This app allows for creating a simulated portfolio of stock options, as well as applying hedging strategies to the portfolio.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+###Current Features:
+Access to Yahoo Finance for updated stock option data.
+Allows searching for tickers and associated options of varying maturities and strike prices.
+Allows for portfolio rebalancing using delta hedging.
+User Interface for said actions.
+Database for persistence.
+###Planned Features:
+More forms of analytics and hedging strategies, such as delta-vega hedging, risk-modelling, statistical summaries.
+Improved UI.
+Proper authentication and personal accounts.
+Multiple portfolios.
+#Architecture
+###Frontend and UI
+The app uses the React framework with TypeScript for implementation of the web-based user interface. The UI is 
+styled with Boostrap and features Redux state management. The frontend is deployed using the Azure Static Web App service and features continuous integration utilizing a GitHub repository.
+###Backend
+For backend, the Node.js Express framework is used, along with Redis caching. The backend is hosted as an Azure standard Web App.
+###Database
+The database used is PostgresSQL hosted using Azure databases. 
+###Data microservice
+A data microservice, mainly for interacting with Yahoo! Finance, in order to get up-to-date data about stock options and treasury yields. The app is written with Python and uses Flask for handling requests. Deployment is done using a Docker container along with Azure Container Instances and GitHub continuous integration (CI).
+###Analytics Microservice
+Microservice for enabling specific calculations, currently the Black-Scholes Delta. Like the data microservice, this is also a Python app using Flask, Docker and Azure Container Instances. 

@@ -36,14 +36,10 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-<<<<<<< HEAD
-    "extends": "react-app"
-=======
     "extends": [
       "react-app",
       "react-app/jest"
     ]
->>>>>>> origin/master
   },
   "browserslist": {
     "production": [
@@ -56,11 +52,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-<<<<<<< HEAD
-=======
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7"
->>>>>>> origin/master
   }
 }

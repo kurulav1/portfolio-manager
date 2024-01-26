@@ -35,6 +35,8 @@ jobs:
           ###### End of Repository/Build Configurations ######
         env:
           NPM_CONFIG_LEGACY_PEER_DEPS: true
+          REACT_APP_ANALYSIS_SERVICE_URL: ${{ secrets.REACT_APP_ANALYSIS_SERVICE_URL }}
+          REACT_APP_BACKEND_URL: ${{ secrets.REACT_APP_BACKEND_URL }}
           
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

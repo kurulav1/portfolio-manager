@@ -34,6 +34,7 @@ export const fetchPortfolio = createAsyncThunk(
   'portfolio/fetchPortfolio',
   async (_, thunkAPI) => {
     try {
+      console.log("Getting portfolio from:" , process.env.REACT_APP_BACKEND_URL)
       const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/portfolio/test`);
 
       if (!Array.isArray(response.data)) {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from '../store';
 import { fetchStockOptionsByTicker, addStockOptionToPortfolio } from '../slices/stockOptionSlice';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Form, Button, Modal, Pagination } from 'react-bootstrap';
+import { Table, Form, Button, Modal, Pagination, Row, Col } from 'react-bootstrap';
 import { RootState } from '../store';
 
 type PositionType = 'long' | 'short';
@@ -32,8 +32,14 @@ const TickerSearchComponent: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
+  const user = useSelector((state: RootState) => state.user.user); // Get the user from Redux state
+
   const handleSearch = () => {
-    dispatch(fetchStockOptionsByTicker({ stockOption: ticker, startDate, endDate }));
+    dispatch(fetchStockOptionsByTicker({ 
+      stockOption: ticker, 
+      startDate, 
+      endDate 
+    }));
   };
 
   const handleOpenAddDialog = (option: StockOption) => {
@@ -42,9 +48,9 @@ const TickerSearchComponent: React.FC = () => {
   };
 
   const handleAddToPortfolio = () => {
-    if (selectedOption) {
+    if (selectedOption && user && user.username) {
       const data = {
-        username: 'test',
+        username: user.username, // Use the actual username from Redux state
         stockOption: {
           tickerSymbol: selectedOption.stockOption,
           strikePrice: selectedOption.strikePrice,
@@ -61,7 +67,7 @@ const TickerSearchComponent: React.FC = () => {
         .then(() => setShowAddDialog(false))
         .catch((error) => console.error('Error adding to portfolio:', error));
     } else {
-      console.error('No option selected');
+      console.error('No option selected or user is not logged in');
     }
   };
 
@@ -121,43 +127,56 @@ const TickerSearchComponent: React.FC = () => {
     pageNumbers.push(i);
   }
 
-  return (
-    <div className="d-flex flex-column align-items-center my-3">
+ return (
+    <div className="my-3">
+      <h3>Search for a ticker:</h3>
       <Form>
-        <Form.Group>
-          <Form.Control 
-            type="text"
-            value={ticker} 
-            onChange={(e) => setTicker(e.target.value)}
-            placeholder="Enter ticker symbol"
-          />
-        </Form.Group>
-        <Button variant="primary" onClick={handleSearch}>Search</Button>
+        <Row>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Control 
+                type="text"
+                value={ticker} 
+                onChange={(e) => setTicker(e.target.value)}
+                placeholder="Enter ticker symbol"
+              />
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Control 
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                placeholder="Start Date"
+              />
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Control 
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                placeholder="End Date"
+              />
+            </Form.Group>
+          </Col>
+          <Col md={2}>
+            <Button variant="primary" onClick={handleSearch} className="w-100">Search</Button>
+          </Col>
+        </Row>
       </Form>
-      <Form.Group>
-  <Form.Label>Start Date</Form.Label>
-  <Form.Control 
-    type="date"
-    value={startDate}
-    onChange={(e) => setStartDate(e.target.value)}
-  />
-</Form.Group>
-<Form.Group>
-  <Form.Label>End Date</Form.Label>
-  <Form.Control 
-    type="date"
-    value={endDate}
-    onChange={(e) => setEndDate(e.target.value)}
-  />
-</Form.Group>
 
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
+     <div style={{ marginTop: '20px' }}>
+    {loading && <p>Loading...</p>}
+    {error && <p>Error: {error}</p>}
 
-      <Table striped bordered hover  className="mx-auto">
+    {currentItems.length > 0 && (
+      <Table striped bordered hover className="mx-auto">
         <thead>
           <tr>
-            <th>Ticker</th>
+            <th>Ticker {/* Tooltip can be added here if needed */}</th>
             <th>Strike Price</th>
             <th>Expiration Date</th>
             <th>Type</th>
@@ -165,46 +184,51 @@ const TickerSearchComponent: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-  {currentItems.map((option) => {
-    const marketPrice = option.marketPrice ? Number(option.marketPrice) : 0; 
+          {currentItems.map((option) => {
+            const marketPrice = option.marketPrice ? Number(option.marketPrice) : 0;
 
-    return (
-      <tr key={option.id}>
-        <td>{option.stockOption}</td>
-        <td>{option.strikePrice}</td>
-        <td>{new Date(option.expirationDate).toLocaleDateString()}</td>
-        <td>{option.optionType}</td>
-        <td>{marketPrice || 'N/A'}</td>
-        <td>
-          <Button
-            variant="success"
-            onClick={() => handleOpenAddDialog({...option, marketPrice})} 
-          >
-            Add
-          </Button>
-        </td>
-      </tr>
-    );
-  })}
-</tbody>
+            return (
+              <tr key={option.id}>
+                <td>{option.stockOption}</td>
+                <td>{option.strikePrice}</td>
+                <td>{new Date(option.expirationDate).toLocaleDateString()}</td>
+                <td>{option.optionType}</td>
+                <td>{marketPrice || 'N/A'}</td>
+                <td>
+                  <Button
+                    variant="success"
+                    onClick={() => handleOpenAddDialog({ ...option, marketPrice })}
+                  >
+                    Add
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
       </Table>
-      <div className="d-flex justify-content-center my-3">
-      <Pagination>
-    {fetchPageNumbers().map((page, index) => {
-      if (page === '...') {
-        return <Pagination.Ellipsis key={index} disabled />;
-      }
-      return (
-        <Pagination.Item 
-          key={index} 
-          active={page === currentPage} 
-          onClick={() => page !== '...' && handlePageChange(page as number)}>
-          {page}
-        </Pagination.Item>
-      );
-    })}
-  </Pagination>
+    )}
   </div>
+    {currentItems.length > 0 && (
+      <div className="d-flex justify-content-center my-3">
+        <Pagination>
+          {fetchPageNumbers().map((page, index) => {
+            if (page === '...') {
+              return <Pagination.Ellipsis key={index} disabled />;
+            }
+            return (
+              <Pagination.Item
+                key={index}
+                active={page === currentPage}
+                onClick={() => page !== '...' && handlePageChange(page as number)}
+              >
+                {page}
+              </Pagination.Item>
+            );
+          })}
+        </Pagination>
+      </div>
+    )}
       <Modal show={showAddDialog} onHide={() => setShowAddDialog(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Add Stock Option to Portfolio</Modal.Title>

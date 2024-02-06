@@ -28,14 +28,12 @@ const getAnalysisServiceUrl = () => {
   return process.env.REACT_APP_ANALYSIS_SERVICE_URL || process.env.ANALYSIS_SERVICE_URL;
 }
 
-
-
 export const fetchPortfolio = createAsyncThunk(
   'portfolio/fetchPortfolio',
-  async (_, thunkAPI) => {
+  async (username: string, thunkAPI) => {
     try {
       console.log("Getting portfolio from:" , process.env.REACT_APP_BACKEND_URL)
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/portfolio/test`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/portfolio/${username}`);
 
       if (!Array.isArray(response.data)) {
         return thunkAPI.rejectWithValue('Data is not an array');

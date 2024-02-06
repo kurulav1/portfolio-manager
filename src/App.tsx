@@ -1,9 +1,15 @@
 import  { useEffect } from 'react';
-import { useDispatch } from './store'; 
+import { useDispatch, useSelector } from './store'; 
 import { fetchPortfolio } from './slices/portfolioSlice';
 import PortfolioView from './components/PortfolioView';
 import HedgedPortfolioView from './components/HedgedPortfolioView';
 import TickerSearchComponent from './components/StockOptionForm';
+import LoginComponent from './components/LoginView';
+import { validateToken, logoutUser } from './slices/userSlice';
+import { setAuthToken } from './utils/axiosConfig';
+import { PersistGate } from 'redux-persist/integration/react';
+import  StatisticsView  from './components/StatisticsView'
+import { store, persistor } from './store'; // import persistor
 import "preline/preline";
 import { IStaticMethods } from "preline/preline";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,31 +22,63 @@ declare global {
 
 function App() {
   const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const user = useSelector((state) => state.user.user);
+  const token = localStorage.getItem('token');
+  setAuthToken(token);
+  useEffect(() => {
+    dispatch(validateToken());
+  }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchPortfolio());
-  }, [dispatch]);
-  console.log(process.env.REACT_APP_ANALYSIS_SERVICE_URL)
-  console.log(process.env.REACT_APP_BACKEND_URL)
-  return (
-    <div className="container mt-4">
-      <div className="row">
-        <div className="col">
-          <TickerSearchComponent />
-        </div>
-      </div>
-      <div className="row mt-4">
-        <div className="col">
-          <PortfolioView />
-        </div>
-      </div>
-      <div className="row mt-4">
-        <div className="col">
-          <HedgedPortfolioView />
-        </div>
-      </div>
+    const verifyTokenOnLoad = async () => {
+      try {
+        await dispatch(validateToken()).unwrap();
+      } catch (error) {
+        dispatch(logoutUser());
+      }
+    };
+  
+    if (token) {
+      verifyTokenOnLoad();
+    }
+  }, [dispatch, token]);
 
+  // Effect for fetching portfolio after successful login
+  useEffect(() => {
+    if (isLoggedIn && user) {
+      dispatch(fetchPortfolio(user.username));
+    }
+  }, [dispatch, isLoggedIn, user]); 
+
+  return (
+    <PersistGate loading={null} persistor={persistor}>
+    <div className="container mt-4">
+      <LoginComponent />
+      {isLoggedIn && (
+        <>
+          <div className="row">
+            <div className="col">
+              <TickerSearchComponent />
+            </div>
+          </div>
+          <div className="row mt-4">
+            <div className="col">
+              <PortfolioView />
+            </div>
+          </div>
+          <div className="row mt-4">
+            <div className="col">
+              <HedgedPortfolioView />
+            </div>
+          </div>
+          <div>
+            <StatisticsView />
+          </div>
+        </>
+      )}
     </div>
+    </PersistGate>
   );
 }
 

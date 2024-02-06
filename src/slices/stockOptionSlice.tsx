@@ -39,9 +39,8 @@ const getBackendUrl = () => {
 
 export const fetchStockOptionsByTicker = createAsyncThunk(
   'ticker/fetchByTicker',
-  async (payload: FetchStockOptionsPayload, thunkAPI) => {
+  async ({ stockOption, startDate, endDate }: FetchStockOptionsPayload, thunkAPI) => {
     try {
-      const { stockOption, startDate, endDate } = payload;
       let url = `${getBackendUrl()}/portfolio/stock-options/${stockOption}`;
       if (startDate && endDate) {
         url += `?start_date=${startDate}&end_date=${endDate}`;

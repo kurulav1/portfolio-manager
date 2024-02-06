@@ -9,7 +9,7 @@ import { validateToken, logoutUser } from './slices/userSlice';
 import { setAuthToken } from './utils/axiosConfig';
 import { PersistGate } from 'redux-persist/integration/react';
 import  StatisticsView  from './components/StatisticsView'
-import { store, persistor } from './store'; // import persistor
+import { persistor } from './store';
 import "preline/preline";
 import { IStaticMethods } from "preline/preline";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -44,7 +44,6 @@ function App() {
     }
   }, [dispatch, token]);
 
-  // Effect for fetching portfolio after successful login
   useEffect(() => {
     if (isLoggedIn && user) {
       dispatch(fetchPortfolio(user.username));

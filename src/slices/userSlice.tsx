@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction, SerializedError } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { setAuthToken } from '../utils/axiosConfig';
 
 import axios from 'axios';
@@ -14,7 +14,7 @@ const initialState: UserState = {
   user: null,
   isLoggedIn: false,
   error: null,
-  loading: false, // Initialize loading state
+  loading: false,
 };
 
 export const loginUser = createAsyncThunk(

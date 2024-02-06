@@ -11,9 +11,7 @@ const StatisticsView = () => {
     const { deltaExposure, performanceComparison, portfolioValue } = useSelector((state: RootState) => state.portfolioStats);
   
     useEffect(() => {
-      console.log("StatisticsView useEffect triggered"); // Logging for debugging
       if (user && user.username) {
-        console.log("Dispatching actions for user:", user.username); // Logging for debugging
         dispatch(fetchDeltaExposure(user.username));
         dispatch(fetchPerformanceComparison(user.username));
         dispatch(fetchPortfolioValue(user.username));
